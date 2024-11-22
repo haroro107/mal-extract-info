@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Replace Title with Anime Info
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  Replace title with formatted anime information on MyAnimeList
 // @author       Haroro
 // @match        https://myanimelist.net/*
@@ -21,11 +21,6 @@
     const airedText = airedElement ? airedElement.textContent.split("Aired:")[1].trim() : "Unknown";
     const firstAiredDate = airedText.split(" to ")[0]; // Extract the starting date
 
-    // Find the type
-    const typeElement = Array.from(document.querySelectorAll("div.spaceit_pad"))
-        .find(el => el.textContent.includes("Type:"));
-    const type = typeElement ? typeElement.querySelector("a").textContent.trim() : "Unknown";
-
     // Find the studio
     const studioElement = Array.from(document.querySelectorAll("div.spaceit_pad"))
         .find(el => el.textContent.includes("Studios:"));
@@ -40,7 +35,7 @@
     const formattedDate = dateParts ? `${dateParts[3].slice(-2)}${monthMap[dateParts[1]]}${dateParts[2].padStart(2, '0')}` : "000000";
 
     // Create the new content
-    const message = `[${formattedDate}] [${studio}] ${title} 【${type}】`;
+    const message = `[${formattedDate}] [${studio}] ${title}`;
 
     // Replace the title with the formatted message
     if (titleElement) {
