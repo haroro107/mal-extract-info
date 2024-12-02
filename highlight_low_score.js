@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Highlight Low Scores
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.1
 // @description  Change background and text color if score is below 7
 // @author       You
 // @match        *://*/*
@@ -20,6 +20,9 @@
                 const score = parseFloat(scoreMatch[0]); // Parse the score as a float
                 if (score < 7) {
                     item.style.backgroundColor = 'red';  // Set background color to red
+                    item.style.color = 'white';         // Set text color to white
+                } else if (score > 8) {
+                    item.style.backgroundColor = 'green';  // Set background color to green
                     item.style.color = 'white';         // Set text color to white
                 }
             }
