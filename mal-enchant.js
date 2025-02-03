@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         MyAnimeList Enhancer
 // @namespace    http://tampermonkey.net/
-// @version      1.5
+// @version      1.6
 // @description  Enhance MyAnimeList with filtering and coloring
 // @author       You
 // @match        https://myanimelist.net/*
@@ -45,6 +45,7 @@
         settingsDiv.innerHTML = `
             <label><input type="checkbox" id="hideCMPL"> Hide CMPL</label>
             <input type="number" id="hideScore" step="0.01" placeholder="Min score" style="width: 100%; padding: 4px; margin-bottom: 5px; border-radius: 4px; border: none;">
+            <input type="number" id="hideMembers" placeholder="Min members" style="width: 100%; padding: 4px; margin-bottom: 5px; border-radius: 4px; border: none;">
             <button id="refreshList" style="width: 100%; padding: 4px; border: none; border-radius: 4px; background: #2196F3; color: white; cursor: pointer;">Apply</button>
             <button id="resetFilters" style="width: 100%; padding: 4px; margin-top: 5px; border: none; border-radius: 4px; background: #f44336; color: white; cursor: pointer;">Reset</button>
         `;
@@ -54,6 +55,7 @@
         document.getElementById('resetFilters').addEventListener('click', () => {
             document.getElementById('hideCMPL').checked = false;
             document.getElementById('hideScore').value = '';
+            document.getElementById('hideMembers').value = '';
             document.querySelectorAll('tr').forEach(row => row.style.display = '');
             filterList();
         });
@@ -67,6 +69,7 @@
     function filterList() {
         const hideCMPL = document.getElementById('hideCMPL').checked;
         const hideScore = parseFloat(document.getElementById('hideScore').value);
+        const hideMembers = parseInt(document.getElementById('hideMembers').value, 10);
 
         document.querySelectorAll('tr').forEach(row => {
             const cmplButton = row.querySelector('.completed');
@@ -93,6 +96,9 @@
 
             if (memberElem) {
                 const members = parseInt(memberElem.innerText.replace(/,/g, ''), 10);
+                if (!isNaN(hideMembers) && members < hideMembers) {
+                    row.style.display = 'none';
+                }
                 memberElem.style.backgroundColor = getColor(members, [50000, 100000, 200000]);
                 memberElem.style.color = 'white';
                 memberElem.style.fontWeight = 'bold';
@@ -112,4 +118,3 @@
     createSettingsUI();
     filterList();
 })();
-
